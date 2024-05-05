@@ -1,31 +1,28 @@
+import math
+
 numDict = {
-    1: "One", 2: "Two", 3: "Three", 4, "Four",
-    5: "Five", 6: "Six", 7: "Seven", 8, "Eight", 9: "Nine",
+    1: "One", 2: "Two", 3: "Three", 4: "Four",
+    5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
     10: "Ten", 11: "Eleven", 12: "Twelve", 13: "Thirteen",
     14: "Fourteen", 15: "Fifteen", 16: "Sixteen", 17: "Seventeen",
-    18: "Eighteen", 19: "Nineteen", 20: "Twenty", 30: "Thirty",
-    40: "Fourty", 50: "Fifty", 60: "Sixty", 70: "Seventy",
-    80: "Eighty", 90: "Ninety", 100: "Hundred", 1000: "Thousand",
-    1000000: "Million", 10000000: "Billion", 100000000: "Trillion"
+    18: "Eighteen", 19: "Nineteen", 
+}
+
+cardDict = {
+    20: "Twenty", 30: "Thirty",40: "Fourty", 50: "Fifty", 
+    60: "Sixty", 70: "Seventy",80: "Eighty", 90: "Ninety", 
+    100: "Hundred", 1000: "Thousand",1000000: "Million", 
+    10000000: "Billion", 100000000: "Trillion"
 }
 
 def main():
-    userInput = input("Please type a number. ")
-    print(int(userInput))
+    userInput = int(input("Please type a number: "))
     checkInput(userInput)
 
 def checkInput(userInput):
-    resultInput = convert(int(userInput))
-    return print(resultInput)
-
-def convert(userInput):
-    result = ""
-    for divisor, letters in numDict:
-        result += userInput * letters
-        userInput %= divisor
-        print(userInput)
-        return result
-
+    if userInput < 20:
+        return print(f"{numDict[userInput]}")
+    return print(search(userInput))
 
 """
     tenCard = {"2": "Twenty", "3": "Thirty", "4": "Fourty","5": "Fifty", 
@@ -53,17 +50,32 @@ def convert(userInput):
 
 
 
-def search(values, targetVal):
-    search_at = 0
-    search_res = False
+def search(targetVal):
     
-    while search_at < len(values) and search_res is False:
-        if values[search_at] == targetVal:
-            search_res = True
-        else:
-            search_at = search_at + 1
+    divisor = calcDiv(targetVal)
+    print(divisor)
+    search_res = ""
+    while targetVal:
+        #lastNum = int(targetVal / divisor)
+        #print(lastNum)
+        lastNum = targetVal / divisor
+        print(lastNum)
+        if targetVal < 100:
+            search_res += (cardDict[lastNum * divisor] + numDict[lastNum])
+        targetVal = math.floor(targetVal % divisor)
+        divisor /= 10
     return search_res
 
+def calcDiv(targetVal):
 
+    divisor = 1
+    while targetVal >= divisor:
+        divisor *= 10
+    if len(str(targetVal)) == 2:
+        divisor /= 10
+        return divisor
+    lastNum = int(targetVal / divisor)
+    divisor = (divisor-lastNum)/10
+    return divisor
 
 main()
