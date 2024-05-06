@@ -1,7 +1,7 @@
 import math
 
 numDict = {
-    1: "One", 2: "Two", 3: "Three", 4: "Four",
+    0: "Zero", 1: "One", 2: "Two", 3: "Three", 4: "Four",
     5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
     10: "Ten", 11: "Eleven", 12: "Twelve", 13: "Thirteen",
     14: "Fourteen", 15: "Fifteen", 16: "Sixteen", 17: "Seventeen",
@@ -22,6 +22,8 @@ def main():
 def checkInput(userInput):
     if userInput < 20:
         return print(f"{numDict[userInput]}")
+    if search(userInput).endswith("Zero") != False:
+        return print(search(userInput).strip("Zero"))
     return print(search(userInput))
 
 """
@@ -45,7 +47,7 @@ def checkInput(userInput):
     if float(userInput) >= 110 and float(userInput) < 120:
         return print(f"{numDict[userInput[:1]]} {cardinals[0]} {tenDict[userInput[1:]]}")
     if float(userInput) >= 120 and float(userInput) < 1000:
-        return print(f"{numDict[userInput[:1]]} {cardinals[0]} {tenCard[userInput[1]]} {numDict[userInput[2:]]}")
+       se return print(f"{numDict[userInput[:1]]} {cardinals[0]} {tenCard[userInput[1]]} {numDict[userInput[2:]]}")
 """
 
 
@@ -53,18 +55,28 @@ def checkInput(userInput):
 def search(targetVal):
     
     divisor = calcDiv(targetVal)
-    print(divisor)
+    #print(divisor)
     search_res = ""
     while targetVal:
         #lastNum = int(targetVal / divisor)
         #print(lastNum)
-        lastNum = targetVal / divisor
+        wholeNum = targetVal // divisor
+        #lastNum = targetVal / divisor
+        digits = targetVal - (divisor * wholeNum)
+        lastNum = targetVal - digits
         print(lastNum)
+        #print(digits)
+        #print(wholeNum)
         if targetVal < 100:
-            search_res += (cardDict[lastNum * divisor] + numDict[lastNum])
+            search_res += (cardDict[lastNum] + numDict[digits])
+            #print(search_res)
+            targetVal = math.floor(targetVal % divisor)
+            divisor /= 10
+            return search_res
+        search_res += (numDict[wholeNum] + cardDict[lastNum])
         targetVal = math.floor(targetVal % divisor)
         divisor /= 10
-    return search_res
+        return search_res
 
 def calcDiv(targetVal):
 
