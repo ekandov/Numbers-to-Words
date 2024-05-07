@@ -9,7 +9,7 @@ numDict = {
 }
 
 cardDict = {
-    20: "Twenty", 30: "Thirty",40: "Fourty", 50: "Fifty", 
+    0: "", 20: "Twenty", 30: "Thirty",40: "Fourty", 50: "Fifty", 
     60: "Sixty", 70: "Seventy",80: "Eighty", 90: "Ninety", 
     100: "Hundred", 1000: "Thousand",1000000: "Million", 
     10000000: "Billion", 100000000: "Trillion"
@@ -20,10 +20,12 @@ def main():
     checkInput(userInput)
 
 def checkInput(userInput):
-    if userInput < 20:
-        return print(f"{numDict[userInput]}")
+    #if userInput < 20:
+    #return print(f"{numDict[userInput]}")
     if search(userInput).endswith("Zero") != False:
         return print(search(userInput).strip("Zero"))
+    if search(userInput).rfind("Dot") != True:
+        return print(search(userInput).replace("Zero", ""))
     return print(search(userInput))
 
 """
@@ -55,28 +57,40 @@ def checkInput(userInput):
 def search(targetVal):
     
     divisor = calcDiv(targetVal)
-    #print(divisor)
+    print(f"Divisor: {divisor}")
     search_res = ""
     while targetVal:
-        #lastNum = int(targetVal / divisor)
-        #print(lastNum)
+
         wholeNum = targetVal // divisor
-        #lastNum = targetVal / divisor
-        digits = targetVal - (divisor * wholeNum)
-        lastNum = targetVal - digits
-        print(lastNum)
-        #print(digits)
-        #print(wholeNum)
-        if targetVal < 100:
-            search_res += (cardDict[lastNum] + numDict[digits])
+        thousandNum = ((targetVal - (wholeNum * divisor)) // 1000) * 1000
+        hundNum = ((targetVal - (wholeNum * divisor)) // 100) * 100 # Checks if user inputted 100 value, works only for numbers above 1000.
+        hunDigit = hundNum // (divisor/10)
+        digits = targetVal - divisor - hundNum
+        hundNum = round(calcDiv(hundNum))
+        tenNum = (digits // 10) * 10
+        digits -= abs(tenNum)
+
+        lastNum = wholeNum * divisor
+        print(f"wholeNum: {wholeNum}")
+        print(f"lastNum: {lastNum}")
+        print(f"thousandNum: {thousandNum}")
+        print(f"hundNum: {hundNum}")
+        print(f"tenNum: {tenNum}")
+        print(f"digits: {digits}")
+        #if targetVal < 100:
+        #search_res += (cardDict[lastNum] + numDict[digits])
             #print(search_res)
-            targetVal = math.floor(targetVal % divisor)
-            divisor /= 10
-            return search_res
-        search_res += (numDict[wholeNum] + cardDict[lastNum])
+        #targetVal = math.floor(targetVal % divisor)
+        #divisor /= 10
+        #return search_res
+        search_res += (numDict[wholeNum] + cardDict[thousandNum] + numDict[hunDigit] + cardDict[hundNum] + cardDict[tenNum] + numDict[digits])
         targetVal = math.floor(targetVal % divisor)
         divisor /= 10
         return search_res
+
+def typeRes(value):
+    pass
+
 
 def calcDiv(targetVal):
 
