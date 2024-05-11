@@ -27,23 +27,28 @@ def checkInput(userInput):
     return print(search(userInput))
 
 def search(targetVal):
-    
+
+    print(f"Control Div: {calcDiv(200)}")
     divisor = calcDiv(targetVal)
     print(f"Divisor: {divisor}")
     search_res = ""
     while targetVal:
 
-        wholeNum = targetVal // divisor 
-        thousandNum = ((targetVal - (wholeNum * divisor)) // 1000) * 1000
-        hundNum = ((targetVal - (wholeNum * divisor)) // 100) * 100 # Checks if user inputted 100 value, works only for numbers above 1000.
-        hunDigit = hundNum // (divisor/10)
-        digits = targetVal - (wholeNum * divisor) - hundNum
+        wholeNum = targetVal // divisor
+            
+        halfNum = (targetVal - (wholeNum * divisor))
+        hundNum = (halfNum // 100) * 100 # Hundreds calculation for numbers over 1000
+        print(f"hundNum1: {hundNum}")
+        hundDigit = hundNum // (divisor/10) # Digits for hundreds
+        thousandNum = (halfNum // 1000) * 1000 # Thousands calculation for numbers over 10000 
+        digits = targetVal - (wholeNum * divisor) - hundNum #Digits calculation
         hundNum = round(calcDiv(hundNum))
         tenNum = (digits // 10) * 10
         digits -= abs(tenNum)
         lastNum = wholeNum * divisor
 
         print(f"wholeNum: {wholeNum}")
+        print(f"halfNum: {halfNum}")
         print(f"lastNum: {lastNum}")
         print(f"thousandNum: {thousandNum}")
         print(f"hundNum: {hundNum}")
@@ -51,7 +56,7 @@ def search(targetVal):
         print(f"digits: {digits}")
 
 
-        search_res += (numDict[wholeNum] + cardDict[divisor] + numDict[hunDigit] + cardDict[hundNum] + cardDict[tenNum] + numDict[digits])
+        search_res += (numDict[wholeNum] + cardDict[divisor] + numDict[hundDigit] + cardDict[hundNum] + cardDict[tenNum] + numDict[digits])
         targetVal = math.floor(targetVal % divisor)
         divisor /= 10
         return search_res
@@ -61,19 +66,17 @@ def typeRes(value):
 
 
 def calcDiv(targetVal):
-
+    
     divisor = 1
     while targetVal >= divisor:
         divisor *= 10
     match len(str(targetVal)):
         case 5 | 8 | 11 | 14: #Special treatment for ten thousands, millions, billions, and trillions.
             divisor /= 100
-            return divisor
         case 9 | 12 | 15: #Special treatment for hundreds of millions, billions, and trillions.
             divisor /= 1000
-            return divisor
-    divisor /= 10
-    print(f"calcDiv div: {divisor}")
+        case _:
+            divisor /= 10
     return divisor
 
 main()
