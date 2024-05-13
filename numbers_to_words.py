@@ -28,7 +28,6 @@ def checkInput(userInput):
 
 def search(targetVal):
 
-    print(f"Control Div: {calcDiv(200)}")
     divisor = calcDiv(targetVal)
     print(f"Divisor: {divisor}")
     search_res = ""
@@ -38,12 +37,11 @@ def search(targetVal):
             
         halfNum = (targetVal - (wholeNum * divisor))
         hundNum = (halfNum // 100) * 100 # Hundreds calculation for numbers over 1000
-        print(f"hundNum1: {hundNum}")
         hundDigit = hundNum // (divisor/10) # Digits for hundreds
         thousandNum = (halfNum // 1000) * 1000 # Thousands calculation for numbers over 10000 
         digits = targetVal - (wholeNum * divisor) - hundNum #Digits calculation
-        hundNum = round(calcDiv(hundNum))
         tenNum = (digits // 10) * 10
+        hundNum = round(calcDiv(hundNum))
         digits -= abs(tenNum)
         lastNum = wholeNum * divisor
 
@@ -55,13 +53,32 @@ def search(targetVal):
         print(f"tenNum: {tenNum}")
         print(f"digits: {digits}")
 
-
         search_res += (numDict[wholeNum] + cardDict[divisor] + numDict[hundDigit] + cardDict[hundNum] + cardDict[tenNum] + numDict[digits])
         targetVal = math.floor(targetVal % divisor)
         divisor /= 10
         return search_res
 
-def typeRes(value):
+def typeRes(str typeVal, int targetVal, int divisor, int wholeNum, int halfNum):
+
+    trillions, billions, millions, thousands, hundreds, tens, digits = [], [], [], [], [], [], []
+
+    match typeVal:
+        case "trillions":
+
+        case "billions":
+
+        case "millions":
+
+        case "thousands":
+
+        case "hundreds":
+
+        case "tens":
+
+        case "digits":
+
+        case _:
+
     pass
 
 
@@ -70,13 +87,14 @@ def calcDiv(targetVal):
     divisor = 1
     while targetVal >= divisor:
         divisor *= 10
+    
     match len(str(targetVal)):
         case 5 | 8 | 11 | 14: #Special treatment for ten thousands, millions, billions, and trillions.
-            divisor /= 100
+            divisor //= 100
         case 9 | 12 | 15: #Special treatment for hundreds of millions, billions, and trillions.
-            divisor /= 1000
+            divisor //= 1000
         case _:
-            divisor /= 10
+            divisor //= 10
     return divisor
 
 main()
