@@ -33,53 +33,62 @@ def search(targetVal):
     search_res = ""
     while targetVal:
 
-        wholeNum = targetVal // divisor
-            
+        wholeNum = targetVal // divisor    
         halfNum = (targetVal - (wholeNum * divisor))
-        hundNum = (halfNum // 100) * 100 # Hundreds calculation for numbers over 1000
-        hundDigit = hundNum // (divisor/10) # Digits for hundreds
-        thousandNum = (halfNum // 1000) * 1000 # Thousands calculation for numbers over 10000 
-        digits = targetVal - (wholeNum * divisor) - hundNum #Digits calculation
-        tenNum = (digits // 10) * 10
-        hundNum = round(calcDiv(hundNum))
-        digits -= abs(tenNum)
-        lastNum = wholeNum * divisor
+
+        thousands:str = typeRes("thousands", targetVal, divisor, wholeNum, halfNum)
+        hundreds:str = typeRes("hundreds", targetVal, divisor, wholeNum, halfNum)
+        digits:str = typeRes("digits", targetVal, divisor, wholeNum, halfNum)
+        tens:str = typeRes("tens", targetVal, divisor, wholeNum, halfNum)
 
         print(f"wholeNum: {wholeNum}")
         print(f"halfNum: {halfNum}")
-        print(f"lastNum: {lastNum}")
-        print(f"thousandNum: {thousandNum}")
-        print(f"hundNum: {hundNum}")
-        print(f"tenNum: {tenNum}")
-        print(f"digits: {digits}")
+        print(f"thousandNum: {thousands[0]}")
+        print(f"hundNum: {hundreds[1]}")
+        print(f"tenNum: {tens[0]}")
+        print(f"digits: {digits[0]}")
 
-        search_res += (numDict[wholeNum] + cardDict[divisor] + numDict[hundDigit] + cardDict[hundNum] + cardDict[tenNum] + numDict[digits])
+        result = (numDict[wholeNum] + cardDict[divisor] + cardDict[thousands[0]] + 
+        numDict[hundreds[0]] + cardDict[hundreds[1]] + cardDict[tens[0]] + numDict[digits[0]])
+
+        search_res += (result)
         targetVal = math.floor(targetVal % divisor)
         divisor /= 10
         return search_res
 
-def typeRes(str typeVal, int targetVal, int divisor, int wholeNum, int halfNum):
+def typeRes(typeVal: str, targetVal: int, divisor: int, wholeNum: int, halfNum: int):
 
     trillions, billions, millions, thousands, hundreds, tens, digits = [], [], [], [], [], [], []
 
+    #Needs work - Currently works for numbers up to 19,999
+    thousandNum = (halfNum // 1000) * 1000
+    thousands.append(round(calcDiv(thousandNum))) #Thousands calculation for numbers over 10000
+    
+    hundNum = (halfNum // 100) * 100
+    hundreds.append(hundNum // (divisor/10)) #Digit calculation for hundreds.
+    hundreds.append(round(calcDiv(hundNum))) #Divisor calculation for hundreds. For numbers over 1000
+
+    tens.append(((targetVal - (wholeNum * divisor) - hundNum) // 10) * 10) # Isolates tens from numbers 100 and over.
+
+    digits.append((targetVal - (wholeNum * divisor) - hundNum) - tens[0]) # Digits calculation
+
     match typeVal:
         case "trillions":
-
+            return trillions
         case "billions":
-
+            return billions
         case "millions":
-
+            return millions
         case "thousands":
-
+            return thousands
         case "hundreds":
-
+            return hundreds
         case "tens":
-
+            return tens
         case "digits":
-
+            return digits
         case _:
-
-    pass
+            return trillions, billions, millions, thousands, hundreds, tens, digits
 
 
 def calcDiv(targetVal):
