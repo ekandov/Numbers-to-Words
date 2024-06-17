@@ -72,12 +72,35 @@ def typeRes(typeVal: str, targetVal: int, divisor: int, wholeNum: int, halfNum: 
 
     #Calculations that separates numbers after divisor
 
-    hundreds.append(calcDiv(halfNum)) #Separates hundreds from halfNum
+    if halfNum <= 0:
 
-    tens.append((halfNum // calcDiv(halfNum)) * 10) #Separates tens from halfNum
+        hundreds.append(0)
+        tens.append(0)
+        digits.append(0)
+        digits.append(0)
+    else:
 
-    digits.append(halfNum // calcDiv(halfNum)) #Separates single digit from hundreds.
-    digits.append(halfNum - (digits[2] * calcDiv(halfNum)) - tens[1]) #Separates digits from halfNum
+        hundreds.append(calcDiv(halfNum)) #Separates hundreds from halfNum
+
+        tens.append(((halfNum - (halfNum // calcDiv(halfNum)) * calcDiv(halfNum)) // 10) * 10) #Separates tens from halfNum
+
+        digits.append(halfNum // (calcDiv(halfNum) * 100)) #Separates single digit from hundreds.
+        print(f"digits2: {digits[2]}")
+        digits.append(halfNum - (digits[2] * calcDiv(halfNum)) - tens[1]) #Separates digits from halfNum
+
+        if targetVal > 999999:
+        
+            while calcDiv(halfNum) > 100:
+                halfNum -= ((halfNum // calcDiv(halfNum)) * calcDiv(halfNum))
+        
+            hundreds.append(calcDiv(halfNum))
+
+            tens.append(((halfNum - (halfNum // calcDiv(halfNum)) * calcDiv(halfNum)) // 10) * 10)
+
+            digits.append(halfNum // calcDiv(halfNum))
+            digits.append(halfNum - (digits[4] * calcDiv(halfNum)) - tens[2])
+
+
 
     if wholeNum < 100:
         digits[1] = wholeNum - tens[0]
@@ -90,16 +113,22 @@ def typeRes(typeVal: str, targetVal: int, divisor: int, wholeNum: int, halfNum: 
         case "hundreds":
             if hundreds[0] < 100:
                 hundreds[0] = 0
+            if hundreds[1] < 100:
+                hundreds[1] = 0
             return hundreds
         case "tens":
             if tens[0] < 20:
                 tens[0] = 0
+            if tens[1] < 20:
+                tens[1] = 0
             return tens
         case "digits":
             if wholeNum < 100 and wholeNum >= 10 or wholeNum < 10:
                 digits[0] = 0
             if wholeNum < 20:
                 digits[1] = wholeNum
+            if digits[3] < 0:
+                digits[3] = 0
             return digits
         case _:
             return print("Invalid input fed to typeRes function.")
@@ -116,7 +145,7 @@ def calcDiv(targetVal):
         case 6 | 9 | 12 | 15: #Special treatment for hundreds of millions, billions, and trillions.
             divisor //= 1000
         case _:
-            divisor //= 10 
+            divisor //= 10
     return divisor
 
 def getNum(targetVal: int, divisor: int, typeVal: str):
@@ -128,9 +157,9 @@ def getNum(targetVal: int, divisor: int, typeVal: str):
             result = targetVal // divisor
             return result
         case "halfNum":
-            if targetVal >= 1000000:
-                pass
             result = targetVal - ((targetVal // divisor) * divisor)
+            #while calcDiv(result) > 100:
+            #    result -= ((result // calcDiv(result)) * calcDiv(result))
             return result
         case _:
             return print("Invalid input fed to getNum function.")
